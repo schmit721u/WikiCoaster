@@ -1,0 +1,51 @@
+<?php
+
+namespace App\Controller;
+
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
+use Doctrine\ORM\EntityManagerInterface;
+// Assurez-vous d'avoir une entité 'Coaster' dans 'App\Entity'
+use App\Entity\Coaster; 
+
+class CoasterController extends AbstractController
+{
+    /**
+     * Une route de base pour l'index du CoasterController
+     */
+    #[Route('/coaster', name: 'app_coaster_index')]
+    public function index(): Response
+    {
+        // Vous pouvez adapter ceci pour afficher une liste de Coasters, par exemple
+        return $this->render('coaster/index.html.twig', [
+            'controller_name' => 'CoasterController',
+        ]);
+    }
+
+    /**
+     * Route pour ajouter un nouveau Coaster
+     * N'oubliez pas d'ajouter la route comme le suggère la note dans l'image.
+     * La route est définie ici pour l'exemple.
+     */
+    #[Route('/coaster/add', name: 'app_coaster_add')]
+    public function add(EntityManagerInterface $em): Response
+    {
+        // Création d'une nouvelle entité Coaster
+        $entity = new Coaster();
+        
+        // Définition de la propriété 'name' (ou toute autre propriété pertinente)
+        $entity->setName('Blue Fire');
+        // // ... vous pouvez ajouter d'autres propriétés ici ...
+
+        // L'injection de dépendances a fourni l'EntityManagerInterface dans $em
+        $em->persist($entity); // Ajoute l'entité dans le manager (prépare l'insertion)
+        $em->flush(); // Exécute la ou les requêtes SQL (insère réellement l'entité dans la base de données)
+
+        // Retourne une réponse simple pour confirmer l'ajout
+        return new Response('Coaster ajouté');
+        
+        // Alternativement, pour une application Symfony standard, vous pourriez rediriger ou rendre un template :
+        // return $this->redirectToRoute('app_coaster_index');
+    }
+}
