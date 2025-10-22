@@ -31,21 +31,12 @@ class CoasterController extends AbstractController
     #[Route('/coaster/add', name: 'app_coaster_add')]
     public function add(EntityManagerInterface $em): Response
     {
-        // Création d'une nouvelle entité Coaster
         $entity = new Coaster();
-        
-        // Définition de la propriété 'name' (ou toute autre propriété pertinente)
-        $entity->setName('Blue Fire');
-        // // ... vous pouvez ajouter d'autres propriétés ici ...
+        $form = $this->createForm(CoasterType::class, $entity);
 
-        // L'injection de dépendances a fourni l'EntityManagerInterface dans $em
-        $em->persist($entity); // Ajoute l'entité dans le manager (prépare l'insertion)
-        $em->flush(); // Exécute la ou les requêtes SQL (insère réellement l'entité dans la base de données)
-
-        // Retourne une réponse simple pour confirmer l'ajout
-        return new Response('Coaster ajouté');
-        
-        // Alternativement, pour une application Symfony standard, vous pourriez rediriger ou rendre un template :
-        // return $this->redirectToRoute('app_coaster_index');
+        return $this->render('coaster/add.html.twig', [
+            'coasterForm' => $form,
+        ]);
     }
+
 }
