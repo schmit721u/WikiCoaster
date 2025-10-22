@@ -6,7 +6,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Doctrine\ORM\EntityManagerInterface;
-// Assurez-vous d'avoir une entité 'Coaster' dans 'App\Entity'
 use App\Entity\Coaster; 
 use App\Form\CoasterType;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,12 +15,12 @@ class CoasterController extends AbstractController
     /**
      * Une route de base pour l'index du CoasterController
      */
-    #[Route(path :'/coaster/new', name: 'app_coaster_index')]
+    #[Route(path :'/coaster/new', name: 'app_coaster_new')]
     
-    public function add(EntityManagerInterface $em): Response
+    public function add(EntityManagerInterface $em, Request $request): Response
 {
     $coaster = new Coaster();
-    $coaster->setName('Sapce');
+    /*$coaster->setName('Space');
     $coaster->setLength(600);
     $coaster->setMaxSpeed(75);
     $coaster->setMaxHeight(68);
@@ -29,9 +28,20 @@ class CoasterController extends AbstractController
 
     $em->persist($coaster);
 
-    $em->flush();
+    $em->flush();*/
 
-    return new Response('Coaster ajouté!');
+    $form = $this->createForm(CoasterType::class, $coaster);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        $em->persist($coaster);
+        $em->flush();
+    }
+    /*return new Response('Coaster ajouté!');*/
+
+    return $this->render('/coaster/add.html.twig', [
+        'CoasterForm' => $form
+    ]);
 }
 
 }
