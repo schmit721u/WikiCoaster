@@ -23,7 +23,7 @@ class Coaster
     private ?int $length = null;
 
     #[ORM\Column(nullable: true)]
-    private ?int $mexHeight = null;
+    private ?int $maxHeight = null;
 
     #[ORM\Column]
     private ?bool $operating = null;
@@ -69,14 +69,14 @@ class Coaster
         return $this;
     }
 
-    public function getMexHeight(): ?int
+    public function getMaxHeight(): ?int
     {
-        return $this->mexHeight;
+        return $this->maxHeight;
     }
 
-    public function setMexHeight(?int $mexHeight): static
+    public function setMaxHeight(?int $maxHeight): static
     {
-        $this->mexHeight = $mexHeight;
+        $this->maxHeight = $maxHeight;
 
         return $this;
     }
