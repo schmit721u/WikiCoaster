@@ -8,4 +8,15 @@
     Welcome to Pixel
     <span class="badge">BUT info2 TP3</span>
     </h1>
+
+    <h1>Ajouter un nouveau Coaster</h1>
+    
+   
+    {{ form_start(coasterForm) }}
+
+    {{ form_widget(coasterForm) }}
+    
+    <button type="submit" class="btn btn-primary">Enregistrer le Coaster</button> 
+    
+    {{ form_end(coasterForm) }}
 {% endblock %}
