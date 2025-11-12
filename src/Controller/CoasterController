@@ -57,4 +57,12 @@ class CoasterController extends AbstractController
 
         return new Response('Coaster créé');*/
     }
+
+    //{id</d+} est un paramêtre de type entier de 1 ou pls chiffres
+    #[Route(path : '/coaster/{id}/edit')]
+     public function edit(): Response
+    {
+        return $this->render('coaster/edit.html.twig', [
+        ]);
+    }
 }
