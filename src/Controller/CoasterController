@@ -2,47 +2,59 @@
 
 namespace App\Controller;
 
+use App\Entity\Coaster;
+use App\Form\CoasterType;
+use Doctrine\DBAL\Driver\SQLSrv\Connection;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Doctrine\ORM\EntityManagerInterface;
-use App\Entity\Coaster; 
-use App\Form\CoasterType;
-use Symfony\Component\HttpFoundation\Request;
 
 class CoasterController extends AbstractController
 {
-    /**
-     * Une route de base pour l'index du CoasterController
-     */
-    #[Route(path :'/coaster/new', name: 'app_coaster_new')]
-    
-    public function add(EntityManagerInterface $em, Request $request): Response
-{
-    $coaster = new Coaster();
-    /*$coaster->setName('Space');
-    $coaster->setLength(600);
-    $coaster->setMaxSpeed(75);
-    $coaster->setMaxHeight(68);
-    $coaster->setOperating(true);
-
-    $em->persist($coaster);
-
-    $em->flush();*/
-
-    $form = $this->createForm(CoasterType::class, $coaster);
-    $form->handleRequest($request);
-
-    if ($form->isSubmitted() && $form->isValid()) {
-        $em->persist($coaster);
-        $em->flush();
+    #[Route(path: '/coaster')]
+    public function index(CoasterRepository $coasterRepository): Response
+    {
+        $entities = $coasterRepository->findAll();
+        return $this->render('coaster/index.html.twig', [
+        'entities' => $entities, //envoie des entités dans la vue
+        ]);
     }
-    /*return new Response('Coaster ajouté!');*/
 
-    return $this->render('/coaster/add.html.twig', [
-        'CoasterForm' => $form
-    ]);
+    #[Route(path: '/coaster/add')]
+    public function add(EntityManagerInterface $em, Request $request): Response
+    {
+        $coaster = new Coaster();
+        $form = $this->createForm(CoasterType::class, $coaster);
+
+        // Envoi des données $_POST dans le formulaire
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->persist($coaster);
+            $em->flush();
+
+            // Redirection
+        }
+
+        return $this->render('/coaster/add.html.twig', [
+            'coasterForm' => $form,
+        ]);
+
+        /*$coaster->setName('Space Mountains');
+        $coaster->setLength(600);
+        $coaster->setMaxHeight(45);
+        $coaster->setMaxSpeed(70);
+        $coaster->setOperating(true);
+
+        // Indique à Doctrine de prendre en compte l'entité
+        $em->persist($coaster);
+
+        // Met à jour la DB
+        $em->flush();
+
+        return new Response('Coaster créé');*/
+    }
 }
-
-}
-

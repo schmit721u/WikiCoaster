@@ -8,10 +8,9 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class AppController extends AbstractController
 {
-    #[Route(path: '/', name: 'app_home')]
-    public function index(): Response // Retirez "Request $request" de la signature
+    #[Route(path: '/')]
+    public function index(): Response
     {
-        // Retirez tout le code de création de formulaire
         return $this->render('app/index.html.twig');
     }
 }
