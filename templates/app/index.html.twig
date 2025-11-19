@@ -1,22 +1,8 @@
-{# templates/app/index.html.twig #}
-{% extends 'base.html.twig' %}
-
-{% block title %}Hello AppController!{% endblock %}
+{% extends "base.html.twig" %}
 
 {% block body %}
-    <h1 class="text-3x1 font-bold underline" >
-    Welcome to Pixel
-    <span class="badge">BUT info2 TP3</span>
-    </h1>
-
-    <h1>Ajouter un nouveau Coaster</h1>
-    
-   
-    {{ form_start(coasterForm) }}
-
-    {{ form_widget(coasterForm) }}
-    
-    <button type="submit" class="btn btn-primary">Enregistrer le Coaster</button> 
-    
-    {{ form_end(coasterForm) }}
+<h1 class="text-3xl font-bold">
+    WikiCoaster 
+    <div class="badge badge-accent">BUT Info 2 TP3</div>
+</h1>
 {% endblock %}

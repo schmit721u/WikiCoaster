@@ -15,7 +15,7 @@ class CoasterType extends AbstractType
             ->add('name')
             ->add('maxSpeed')
             ->add('length')
-            ->add('mexHeight')
+            ->add('maxHeight')
             ->add('operating')
         ;
     }
