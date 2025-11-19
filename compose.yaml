@@ -1,9 +1,10 @@
+version: '3.7'
 services:
     database:
         image: 'mysql:latest'
         environment:
             MYSQL_ROOT_PASSWORD: password
-            MYSQL_DATABASE: main_tp3
+            MYSQL_DATABASE: wikicoaster
             MYSQL_ALLOW_EMPTY_PASSWORD: true
         ports:
             # To allow the host machine to access the ports below, modify the lines below.
