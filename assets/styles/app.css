@@ -1,7 +1,9 @@
 @import "tailwindcss";
 /* Scan seulement les fichiers Twig */
+@import "bootstrap-icons/font/bootstrap-icons";
 @source "../../templates";
 @plugin "daisyui";
+
 
 @plugin "daisyui/theme" {
   name: "light";
