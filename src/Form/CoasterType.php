@@ -2,9 +2,10 @@
 
 namespace App\Form;
 
+use App\Entity\Categorie;
 use App\Entity\Coaster;
-use App\Entity\Park; // <--- 1. Important : Importez l'entité Park
-use Symfony\Bridge\Doctrine\Form\Type\EntityType; // <--- 2. Important : Importez le type EntityType
+use App\Entity\Park;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -24,6 +25,14 @@ class CoasterType extends AbstractType
                 'choice_label' => 'name',      
                 'label' => 'Park',            
                 'placeholder' => 'Choisir un parc', 
+            ])
+            ->add('categories', EntityType::class, [
+                'class' => Categorie::class,
+                'choice_label' => 'name',
+                'label' => 'Categorie',
+                'multiple' => true, 
+                'expanded' => true, 
+                'by_reference' => false,
             ])
         ;
     }
