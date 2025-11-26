@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Categorie;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ColorType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -13,7 +14,7 @@ class CategorieType extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('color')
+            ->add('color', ColorType::class)
         ;
     }
 
