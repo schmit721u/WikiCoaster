@@ -17,7 +17,8 @@ class ParkType extends AbstractType
             ->add('country', CountryType::class, [
                 'label' => 'Pays',
                 'placeholder' => 'Sélectionnez un pays',
-                'preferred_choices' => ['FR', 'US', 'DE', 'GB', 'ES'], 
+                'preferred_choices' => ['FR', 'BE', 'CH', 'LU', 'DE', 'ES', 'IT', 'GB', 
+                'NL', 'PT', 'AT', 'IE', 'SE', 'NO', 'DK', 'FI', 'PL'], 
             ])
             ->add('openingYear')
         ;
