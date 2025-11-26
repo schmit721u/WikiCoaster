@@ -40,6 +40,7 @@ class CoasterController extends AbstractController
             $em->flush();
 
             // redirection
+            return $this->redirectToRoute('app_coaster_index');
         }
 
         return $this->render('/coaster/add.html.twig', [
@@ -58,6 +59,8 @@ class CoasterController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em->flush();
+
+            return $this->redirectToRoute('app_coaster_index');
         }
 
         return $this->render('/coaster/edit.html.twig', [
