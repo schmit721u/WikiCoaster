@@ -18,7 +18,7 @@ class Park
     #[ORM\Column(length: 80)]
     private ?string $name = null;
 
-    #[ORM\Column(length: 2)]
+    #[ORM\Column(length: 20)]
     private ?string $country = null;
 
     #[ORM\Column(nullable: true)]
