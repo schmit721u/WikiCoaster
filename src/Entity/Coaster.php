@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\CoasterRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity(repositoryClass: CoasterRepository::class)]
 class Coaster
@@ -30,6 +32,14 @@ class Coaster
 
     #[ORM\ManyToOne(inversedBy: 'coasters')]
     private ?Park $park = null;
+
+    #[ORM\ManyToMany(targetEntity: Categorie::class)]
+    private Collection $categories;
+
+    public function __construct()
+    {
+        $this->categories = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -104,6 +114,30 @@ class Coaster
     public function setPark(?Park $park): static
     {
         $this->park = $park;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Categorie>
+     */
+    public function getCategories(): Collection
+    {
+        return $this->categories;
+    }
+
+    public function addCategory(Categorie $category): static
+    {
+        if (!$this->categories->contains($category)) {
+            $this->categories->add($category);
+        }
+
+        return $this;
+    }
+
+    public function removeCategory(Categorie $category): static
+    {
+        $this->categories->removeElement($category);
 
         return $this;
     }
