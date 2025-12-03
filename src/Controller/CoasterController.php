@@ -4,11 +4,10 @@ namespace App\Controller;
 
 use App\Entity\Coaster;
 use App\Form\CoasterType;
+use App\Repository\CategorieRepository;
 use App\Repository\CoasterRepository;
-use Doctrine\DBAL\Driver\Mysqli\Connection;
-use Doctrine\ORM\EntityManager;
+use App\Repository\ParkRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Dom\Entity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,13 +16,37 @@ use Symfony\Component\Routing\Attribute\Route;
 class CoasterController extends AbstractController
 {
     #[Route(path: '/coaster')]
-    public function index(CoasterRepository $coasterRepository): Response
+    public function index(
+        CoasterRepository $coasterRepository,
+        ParkRepository $parkRepository,
+        CategorieRepository $categorieRepository,
+        Request $request,
+    ): Response
     {
         // Récupére toutes les entités Coaster
-        $entities = $coasterRepository->findAll();
+        // $entities = $coasterRepository->findAll();
+        $parks = $parkRepository->findAll();
+        $categories = $categorieRepository->findAll();
+
+        // Valeurs envoyées depuis le formulaire de filtre
+        $parkId = (int) $request->query->get('park');
+        $categorieId = (int) $request->query->get('categorie');
+
+        $count = 2;
+        $page = (int) $request->query->get('p', 1); // 1 par défaut
+
+        $entities = $coasterRepository->findFiltered($parkId, $categorieId, $count, $page);
+
+        $pageCount = max(ceil($entities->count() / $count), 1);
 
         return $this->render('coaster/index.html.twig', [
             'entities' => $entities, // Envoi des entités dans la vue
+            'parks' => $parks,
+            'categories' => $categories,
+            'parkId' => $parkId,
+            'categorieId' => $categorieId,
+            'pageCount' => $pageCount, // Nombre de pages
+            'page' => $page, // Numéro de la page à afficher
         ]);
     }
 
@@ -69,15 +92,25 @@ class CoasterController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/coaster/{id<\d+>}/delete', name: 'app_coaster_delete')]
+    #[Route(path: '/coaster/{id<\d+>}/delete')]
     public function delete(Coaster $entity, EntityManagerInterface $em, Request $request): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $entity->getId(), $request->request->get('_token')
+        // $_POST['_token'] => $request->request 
+        // $_GET['value'] => $request->query 
+        // $_SERVER[] => $request->server 
+        // $request->get('_token') => Deprecated
+
+        if ($this->isCsrfTokenValid(
+            'delete' . $entity->getId(), 
+            $request->request->get('_token')
         )) {
             $em->remove($entity);
             $em->flush();
-            return $this->redirectToRoute('app/coaster/index');
+
+            // symfony console debug:router
+            return $this->redirectToRoute('app_coaster_index');
         }
+
         return $this->render('/coaster/delete.html.twig', [
             'coaster' => $entity,
         ]);

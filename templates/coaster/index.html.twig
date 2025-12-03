@@ -2,24 +2,25 @@
 
 {% block body %}
 <h1>Liste des Coasters</h1>
-<a href="{{ path('app_coaster_add') }}" class="btn btn-success">Ajouter un coaster</a>
+<a href="{{ path('app_coaster_add') }}" class="btn btn-success">Ajouter</a>
 
-<form action="" methode="GET" class="flex">
+<form action="" method="GET" class="flex py-3 ">
   <select name="park" class="select">
-    <option value=""> Tous les parcs </option>
-    {% for park in parks %} 
-    <option value="{{park.id}}">{{park.name}}</option>
+    <option value="">Tous les parcs</option>
+    {% for park in parks %}
+    {# app.request.query.get('park') #}
+    <option value="{{ park.id }}" {{ parkId == park.id ? 'selected':'' }}>{{ park.name }}</option>
     {% endfor %}
   </select>
 
-  <select name="categorie" class="categories">
-    <option value=""> Tous les parcs </option>
-    {% for category in categories %} 
-    <option value="{{category.id}}">{{category.name}}</option>
+  <select name="categorie" class="select ms-2">
+    <option value="">Toutes les catégories</option>
+    {% for categorie in categories %}
+    <option value="{{ categorie.id }}" {{ categorieId == categorie.id ? 'selected':'' }}>{{ categorie.name }}</option>
     {% endfor %}
+  </select>
 
-
-
+  <button type="submit" class="ms-2 btn btn-default"><i class="bi bi-funnel"></i> Filtrer</button>
 </form>
 
 <div class="overflow-x-auto">
@@ -29,7 +30,7 @@
       <tr>
         <th>Nom</th>
         <th>Parc</th>
-        <th>Categories</th>
+        <th>Catégories</th>
         <th>Longueur</th>
         <th>Vit. Max.</th>
         <th>Haut. Max.</th>
@@ -44,21 +45,25 @@
             <td><strong>{{ entity.name }}</strong></td>
             <td>{{ entity.park }}</td>
             <td>
-              {% for category in entity.categories %}
-                <span class="bagde text_white" style="background-color: {{ category.color }}">{{category.name}}</span>
-                {% endfor %}
+              {% for categorie in entity.categories %}
+                <span class="badge text-white" style="background-color: {{ categorie.color }}">{{ categorie.name }}</span>
+              {% endfor %}
             </td>
+            
             <td>{{ entity.length }}</td>
             <td>{{ entity.maxSpeed }}</td>
             <td>{{ entity.maxHeight }}</td>
             <td>{{ entity.operating ? '🟢​':'🔴​' }}</td>
             <td>
-              <a href="{{ path('app_coaster_edit', {id: entity.id}) }}" class="btn btn-accent btn-sm">Modif.</a>
-              <a href="{{ path('app_coaster_delete', {id: entity.id}) }}" class="btn btn-warning btn-sm">Supprimer.</a>
+              <a href="{{ path('app_coaster_edit', {id: entity.id}) }}" class="btn btn-accent btn-sm"><i class="bi bi-pencil"></i></a>
+              <a href="{{ path('app_coaster_delete', {id: entity.id}) }}" class="btn btn-warning btn-sm"><i class="bi bi-trash"></i></a>
             </td>
         </tr>
       {% endfor %}
     </tbody>
   </table>
 </div>
+<div>{{ entities.count }} coaster(s)</div>
+
+{% include "utils/_pagination.html.twig" with {'route': 'app_coaster_index'} %}
 {% endblock %}

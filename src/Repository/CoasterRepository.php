@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Coaster;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -16,14 +17,33 @@ class CoasterRepository extends ServiceEntityRepository
         parent::__construct($registry, Coaster::class);
     }
 
-    public function findFiltered(int $parkId = 0, int $categoryId = 0): array
+    public function findFiltered(
+        int $parkId = 0,
+        int $categorieId = 0,
+        int $count = 2,
+        int $page = 1,
+    ): Paginator
     {
         $qb = $this->createQueryBuilder('c')
             ->leftJoin('c.park', 'p')
             ->leftJoin('c.categories', 'ca')
         ;
 
-        return $qb->getQuery()->getResult();
+        if ($parkId > 0) {
+            $qb->andWhere('p.id = :parkId')
+                ->setParameter('parkId', $parkId);
+        }
+
+        if ($categorieId > 0) {
+            $qb->andWhere('ca.id = :catId')
+                ->setParameter('catId', $categorieId);
+        }
+
+        $begin = ($page - 1) * $count; // Calcul de l'offset
+        $qb->setFirstResult($begin) // OFFSET
+            ->setMaxResults($count); // LIMIT
+
+        return new Paginator($qb->getQuery());
     }
 
     //    /**
