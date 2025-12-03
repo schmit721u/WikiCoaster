@@ -4,6 +4,24 @@
 <h1>Liste des Coasters</h1>
 <a href="{{ path('app_coaster_add') }}" class="btn btn-success">Ajouter un coaster</a>
 
+<form action="" methode="GET" class="flex">
+  <select name="park" class="select">
+    <option value=""> Tous les parcs </option>
+    {% for park in parks %} 
+    <option value="{{park.id}}">{{park.name}}</option>
+    {% endfor %}
+  </select>
+
+  <select name="categorie" class="categories">
+    <option value=""> Tous les parcs </option>
+    {% for category in categories %} 
+    <option value="{{category.id}}">{{category.name}}</option>
+    {% endfor %}
+
+
+
+</form>
+
 <div class="overflow-x-auto">
   <table class="table">
     <!-- head -->

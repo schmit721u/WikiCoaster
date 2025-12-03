@@ -16,6 +16,23 @@ class CoasterRepository extends ServiceEntityRepository
         parent::__construct($registry, Coaster::class);
     }
 
+    public function findFiltered(
+    string $parkId = '',
+    string $categoryId = '',
+): array
+{
+    $qb = $this->createQueryBuilder('c')
+        ->leftJoin('c.park', 'p')
+    ;
+    if ($parkId !== '') {
+        $qb->andWhere('p.id = :parkId')
+            ->setParameter('parkId', (int)$parkId)
+        ;
+    }
+    // Filtrer la catégorie
+    
+    return $qb->getQuery()->getResult();
+
     //    /**
     //     * @return Coaster[] Returns an array of Coaster objects
     //     */
