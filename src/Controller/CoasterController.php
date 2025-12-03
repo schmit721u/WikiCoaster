@@ -8,6 +8,7 @@ use App\Repository\CoasterRepository;
 use Doctrine\DBAL\Driver\Mysqli\Connection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Dom\Entity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -65,6 +66,14 @@ class CoasterController extends AbstractController
 
         return $this->render('/coaster/edit.html.twig', [
             'coasterForm' => $form,
+        ]);
+    }
+
+    #[Route(path: '/coaster/{id<\d+>}/edit')]
+    public function delete(Coaster $entity, EntityManagerInterface $em, Request $request): Response
+    {
+        return $this->render('/coaster/delete.html.twig', [
+            'coaster' => $entity,
         ]);
     }
 }
