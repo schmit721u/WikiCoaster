@@ -28,6 +28,7 @@
             <td>{{ entity.operating ? '🟢​':'🔴​' }}</td>
             <td>
               <a href="{{ path('app_coaster_edit', {id: entity.id}) }}" class="btn btn-accent btn-sm">Modif.</a>
+              <a href="{{ path('app_coaster_delete', {id: entity.id}) }}" class="btn btn-warning btn-sm">Supprimer.</a>
             </td>
         </tr>
       {% endfor %}
