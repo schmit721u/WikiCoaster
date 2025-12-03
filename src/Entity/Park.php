@@ -18,7 +18,7 @@ class Park
     #[ORM\Column(length: 80)]
     private ?string $name = null;
 
-    #[ORM\Column(length: 20)]
+    #[ORM\Column(length: 2)]
     private ?string $country = null;
 
     #[ORM\Column(nullable: true)]
@@ -104,5 +104,10 @@ class Park
         }
 
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->name;
     }
 }
