@@ -10,6 +10,8 @@
     <thead>
       <tr>
         <th>Nom</th>
+        <th>Parc</th>
+        <th>Categories</th>
         <th>Longueur</th>
         <th>Vit. Max.</th>
         <th>Haut. Max.</th>
@@ -22,6 +24,12 @@
       {# tr>td*6 #}
         <tr>
             <td><strong>{{ entity.name }}</strong></td>
+            <td>{{ entity.park }}</td>
+            <td>
+              {% for category in entity.categories %}
+                <span class="bagde text_white" style="background-color: {{ category.color }}">{{category.name}}</span>
+                {% endfor %}
+            </td>
             <td>{{ entity.length }}</td>
             <td>{{ entity.maxSpeed }}</td>
             <td>{{ entity.maxHeight }}</td>
