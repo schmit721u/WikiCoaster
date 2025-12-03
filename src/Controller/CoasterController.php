@@ -69,9 +69,15 @@ class CoasterController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/coaster/{id<\d+>}/edit')]
+    #[Route(path: '/coaster/{id<\d+>}/delete', name: 'app_coaster_delete')]
     public function delete(Coaster $entity, EntityManagerInterface $em, Request $request): Response
     {
+        if ($this->isCsrfTokenValid('delete' . $entity->getId(), $request->request->get('_token')
+        )) {
+            $em->remove($entity);
+            $em->flush();
+            return $this->redirectToRoute('app/coaster/index');
+        }
         return $this->render('/coaster/delete.html.twig', [
             'coaster' => $entity,
         ]);
