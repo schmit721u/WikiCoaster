@@ -43,7 +43,7 @@
       {# tr>td*6 #}
         <tr>
             <td><strong>{{ entity.name }}</strong></td>
-            <td>{{ entity.park }}</td>
+            <td>{{ entity.park.name }}</td>
             <td>
               {% for categorie in entity.categories %}
                 <span class="badge text-white" style="background-color: {{ categorie.color }}">{{ categorie.name }}</span>
