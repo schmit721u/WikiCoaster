@@ -14,18 +14,28 @@
         {% endblock %}
     </head>
     <body>
-        <main class="flex flex-nowrap h-[100vh]">
-            <div class="flex flex-col shrink-0 shadow w-[240px] bg-base-200">
+ <main class="flex flex-nowrap h-[100vh]">
+            <div class="flex flex-col shrink-0 shadow w-[240px] bg-base-200 pb-6">
                 <div class="py-2 bg-primary text-center text-white">Wiki Coaster</div>
-            <ul class="menu bg-base-200 rounded-box w-56">
-                    <li><a href="{{ path('app_user_index') }}">Liste des Utilisateurs</a><li>
-                    <li><a href="{{ path('app_register') }}">S'inscrire</a><li>
-                    <li><a href="{{ path('app_login') }}">Se connecter</a><li>
-                    <li><a href="{{ path('app_logout') }}">Se déconnecter</a><li>
+
+                <ul class="menu bg-base-200 rounded-box w-56">
                     <li><a href="{{ path('app_coaster_index') }}"><i class="bi bi-minecart"></i> Coasters</a></li>
                     <li><a href="{{ path('app_park_index') }}"><i class="bi bi-geo"></i> Parcs</a></li>
                     <li><a href="{{ path('app_categorie_index') }}"><i class="bi bi-tags"></i> Catégories</a></li>
-            </ul>
+                </ul>
+
+                <div class="flex flex-col mt-auto p-2">
+                    {% if is_granted('ROLE_USER') %}
+                        <a href="{{ path('app_logout') }}" class="btn btn-secondary"><i class="bi bi-door-closed"></i>Se déconnecter</a>
+                    {% else %}
+                        <a href="{{ path('app_login') }}" class="btn btn-neutral">
+                            <i class="bi bi-box-arrow-in-right"></i> Se connecter
+                        </a>
+                        <a href="{{ path('app_register') }}" class="btn btn-primary mt-2">
+                            <i class="bi bi-person-plus"></i> Créer un compte
+                        </a>
+                    {% endif %}
+                </div>
             </div>
             <div class="p-4 flex-grow-1">
                 <div class="bg-base-200 p-2 rounded-xs border-base-300">
