@@ -22,6 +22,9 @@
                     <li><a href="{{ path('app_coaster_index') }}"><i class="bi bi-minecart"></i> Coasters</a></li>
                     <li><a href="{{ path('app_park_index') }}"><i class="bi bi-geo"></i> Parcs</a></li>
                     <li><a href="{{ path('app_categorie_index') }}"><i class="bi bi-tags"></i> Catégories</a></li>
+                    {% if is_granted('ROLE_USER') %}
+                    <li><a href="{{ path('app_user_index') }}"><i class="bi bi-tags"></i> Utilisateurs</a></li>
+                    {% endif %}
                 </ul>
 
                 <div class="flex flex-col mt-auto p-2">

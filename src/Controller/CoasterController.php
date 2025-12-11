@@ -12,6 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\http\Attribute\IsGranted;
 
 class CoasterController extends AbstractController
 {
@@ -51,6 +52,7 @@ class CoasterController extends AbstractController
     }
 
     #[Route(path: '/coaster/add')]
+    #[IsGranted('ROLE_ADMIN')] //seul les admins peuvent aller sur cette page 
     public function add(EntityManagerInterface $em, Request $request): Response
     {
         $coaster = new Coaster();
@@ -60,6 +62,7 @@ class CoasterController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $user = $this->getUser();
             $em->persist($coaster);
             $em->flush();
 
@@ -75,6 +78,7 @@ class CoasterController extends AbstractController
     // {id<\d+>} est un paramètre de type entier de 1 ou plusieurs chiffres
     // Symfony utilise le param converter pour trouver l'entité Coaster depuis l'id 
     #[Route(path: '/coaster/{id<\d+>}/edit')]
+    #[IsGranted('ROLE_ADMIN')] //seul les admins peuvent aller sur cette page 
     public function edit(Coaster $entity, EntityManagerInterface $em, Request $request): Response
     {
         // dump($entity);
@@ -93,6 +97,7 @@ class CoasterController extends AbstractController
     }
 
     #[Route(path: '/coaster/{id<\d+>}/delete')]
+    #[IsGranted('ROLE_ADMIN')] //seul les admins peuvent aller sur cette page 
     public function delete(Coaster $entity, EntityManagerInterface $em, Request $request): Response
     {
         // $_POST['_token'] => $request->request 
