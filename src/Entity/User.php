@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -41,6 +43,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotBlank()]
     #[Assert\Email()]
     private ?string $email = null;
+
+    /**
+     * @var Collection<int, Coaster>
+     */
+    #[ORM\OneToMany(targetEntity: Coaster::class, mappedBy: 'Author')]
+    private Collection $coasters;
+
+    public function __construct()
+    {
+        $this->coasters = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -131,6 +144,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setEmail(string $email): self
     {
         $this->email = $email;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Coaster>
+     */
+    public function getCoasters(): Collection
+    {
+        return $this->coasters;
+    }
+
+    public function addCoaster(Coaster $coaster): static
+    {
+        if (!$this->coasters->contains($coaster)) {
+            $this->coasters->add($coaster);
+            $coaster->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCoaster(Coaster $coaster): static
+    {
+        if ($this->coasters->removeElement($coaster)) {
+            // set the owning side to null (unless already changed)
+            if ($coaster->getAuthor() === $this) {
+                $coaster->setAuthor(null);
+            }
+        }
 
         return $this;
     }

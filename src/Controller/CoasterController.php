@@ -56,6 +56,7 @@ class CoasterController extends AbstractController
     public function add(EntityManagerInterface $em, Request $request): Response
     {
         $coaster = new Coaster();
+        $coaster->setAuthor($this->getUser());
 
         $form = $this->createForm(CoasterType::class, $coaster);
         // Injecter les données $_POST
