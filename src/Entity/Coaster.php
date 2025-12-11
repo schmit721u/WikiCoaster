@@ -37,7 +37,7 @@ class Coaster
     private Collection $categories;
 
     #[ORM\ManyToOne(inversedBy: 'coasters')]
-    private ?User $Author = null;
+    private ?User $author = null;
 
     public function __construct()
     {
@@ -147,12 +147,12 @@ class Coaster
 
     public function getAuthor(): ?User
     {
-        return $this->Author;
+        return $this->author;
     }
 
-    public function setAuthor(?User $Author): static
+    public function setAuthor(?User $author): static
     {
-        $this->Author = $Author;
+        $this->author = $author;
 
         return $this;
     }

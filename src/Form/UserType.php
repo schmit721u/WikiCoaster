@@ -19,7 +19,7 @@ class UserType extends AbstractType
                 'expanded' => true,
                 'choices' => [
                     //key => value
-                    'Administarteur' => 'ROLE_ADMIN',
+                    'Administrateur' => 'ROLE_ADMIN',
                 ],
             ])
             ->add('email')

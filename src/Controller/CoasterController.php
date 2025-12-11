@@ -7,6 +7,7 @@ use App\Form\CoasterType;
 use App\Repository\CategorieRepository;
 use App\Repository\CoasterRepository;
 use App\Repository\ParkRepository;
+use App\Security\Voter\CoasterVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -82,6 +83,8 @@ class CoasterController extends AbstractController
     #[IsGranted('ROLE_ADMIN')] //seul les admins peuvent aller sur cette page 
     public function edit(Coaster $entity, EntityManagerInterface $em, Request $request): Response
     {
+        $this->denyAccessUnlessGranted(CoasterVoter::EDIT, $entity);
+
         // dump($entity);
         $form = $this->createForm(CoasterType::class, $entity);
         $form->handleRequest($request);
@@ -101,6 +104,8 @@ class CoasterController extends AbstractController
     #[IsGranted('ROLE_ADMIN')] //seul les admins peuvent aller sur cette page 
     public function delete(Coaster $entity, EntityManagerInterface $em, Request $request): Response
     {
+        $this->denyAccessUnlessGranted(CoasterVoter::EDIT, $entity);
+
         // $_POST['_token'] => $request->request 
         // $_GET['value'] => $request->query 
         // $_SERVER[] => $request->server 
