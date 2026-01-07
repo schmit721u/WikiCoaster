@@ -33,6 +33,8 @@ final class CoasterVoter extends Voter
                 return $user === $subject->getAuthor();
 
             case self::VIEW:
+                return $subject->isPublished()
+                    || ($user === $subject->getAuthor());
                 // logic to determine if the user can VIEW
                 // return true or false
                 break;
