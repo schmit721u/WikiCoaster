@@ -126,4 +126,14 @@ class CoasterController extends AbstractController
             'coaster' => $entity,
         ]);
     }
+
+    #[Route('/coaster/{id<\d+>}')]
+    public function show(): Response
+    {
+        $this->denyAccessUnlessGranted(CoasterVoter::VIEW, $entity);
+
+        return $this->render('/coaster/show.html.twig', [
+            'entity' => $entity,
+        ]);
+    }
 }
