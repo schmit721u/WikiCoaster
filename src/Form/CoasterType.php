@@ -10,6 +10,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Validator\Constraints\Image;
 
 class CoasterType extends AbstractType
 {
@@ -40,13 +42,29 @@ class CoasterType extends AbstractType
                 'expanded' => true, 
                 'by_reference' => false,
             ])
-        ;
+            ->add('image', FileType::class, [
+                    'label' => 'Image du coaster',
+                    'mapped' => false,     // Ne correspond pas à une propriété de l'entité [cite: 11]
+                    'required' => false,   // Le champ n'est pas obligatoire [cite: 12]
+                    'constraints' => [     // Sécurisation du type de fichier [cite: 22]
+                        new Image([
+                            'maxSize' => '2M',
+                            'mimeTypes' => [
+                                'image/jpeg',
+                                'image/png',
+                            ],
+                            'mimeTypesMessage' => 'Veuillez uploader une image JPG ou PNG valide',
+                        ])
+                    ],
+                ])
+            ;
 
         if  ($this->autorizationChecker->isGranted('ROLE_ADMIN')) {
             $builder->add('published', options :[
                 'label'=>"Publier l'affiche" ,
             ]);
         }
+        
     }
 
     public function configureOptions(OptionsResolver $resolver): void
