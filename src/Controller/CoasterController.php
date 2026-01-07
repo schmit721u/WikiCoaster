@@ -53,7 +53,7 @@ class CoasterController extends AbstractController
     }
 
     #[Route(path: '/coaster/add')]
-    #[IsGranted('ROLE_ADMIN')] //seul les admins peuvent aller sur cette page 
+    #[IsGranted('ROLE_USER')] 
     public function add(EntityManagerInterface $em, Request $request): Response
     {
         $coaster = new Coaster();
@@ -80,7 +80,7 @@ class CoasterController extends AbstractController
     // {id<\d+>} est un paramètre de type entier de 1 ou plusieurs chiffres
     // Symfony utilise le param converter pour trouver l'entité Coaster depuis l'id 
     #[Route(path: '/coaster/{id<\d+>}/edit')]
-    #[IsGranted('ROLE_ADMIN')] //seul les admins peuvent aller sur cette page 
+    #[IsGranted('ROLE_USER')] 
     public function edit(Coaster $entity, EntityManagerInterface $em, Request $request): Response
     {
         $this->denyAccessUnlessGranted(CoasterVoter::EDIT, $entity);
@@ -127,8 +127,8 @@ class CoasterController extends AbstractController
         ]);
     }
 
-    #[Route('/coaster/{id<\d+>}')]
-    public function show(): Response
+    #[Route('/coaster/{id<\d+>}', methods: ['GET'])]
+    public function show(Coaster $entity): Response
     {
         $this->denyAccessUnlessGranted(CoasterVoter::VIEW, $entity);
 

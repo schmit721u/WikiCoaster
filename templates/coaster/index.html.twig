@@ -41,7 +41,7 @@
     <tbody>
       {% for entity in entities %}
       {# tr>td*6 #}
-        <tr class>
+        <tr class="{% if not entity.published %}bg-warning{% endif %}">
             <td><a href="{{path('app_coaster_show', {id: entity.id}) }}"><strong>{{ entity.name }}</strong></a></td>
             <td>{{ entity.park.name }}</td>
             <td>
@@ -55,6 +55,8 @@
             <td>{{ entity.maxHeight }}</td>
             <td>{{ entity.operating ? '🟢​':'🔴​' }}</td>
             <td>
+            {# {% if is_granted('POST_EDIT', entity) %} #}
+            {% if is_granted(constant("App\\Security\\Voter\\CoasterVoter::EDIT"), entity) %}
               <a href="{{ path('app_coaster_edit', {id: entity.id}) }}" class="btn btn-accent btn-sm"><i class="bi bi-pencil"></i></a>
               <a href="{{ path('app_coaster_delete', {id: entity.id}) }}" class="btn btn-warning btn-sm"><i class="bi bi-trash"></i></a>
             </td>

@@ -6,16 +6,23 @@ use App\Entity\Coaster;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Bundle\SecurityBundle\Security;
+
 
 /**
  * @extends ServiceEntityRepository<Coaster>
  */
 class CoasterRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(
+    ManagerRegistry $registry,
+    private Security $security,
+    )
     {
-        parent::__construct($registry, Coaster::class);
+    parent::__construct($registry, Coaster::class);
     }
+
+    
 
     public function findFiltered(
         int $parkId = 0,
@@ -42,6 +49,12 @@ class CoasterRepository extends ServiceEntityRepository
         $begin = ($page - 1) * $count; // Calcul de l'offset
         $qb->setFirstResult($begin) // OFFSET
             ->setMaxResults($count); // LIMIT
+
+        if (!$this->security->isGranted('ROLE_ADMIN')) {
+            $qb->andWhere('c.published = true OR c.author = :author')
+            ->setParameter('author', $this->security->getUser())
+        ;
+        }
 
         return new Paginator($qb->getQuery());
     }
