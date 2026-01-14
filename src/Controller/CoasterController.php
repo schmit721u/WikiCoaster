@@ -4,11 +4,11 @@ namespace App\Controller;
 
 use App\Entity\Coaster;
 use App\Form\CoasterType;
-use App\Service\FileUploader;
-use App\Repository\CategorieRepository;
+use App\Repository\CategoryRepository;
 use App\Repository\CoasterRepository;
 use App\Repository\ParkRepository;
 use App\Security\Voter\CoasterVoter;
+use App\Service\FileUploader\FileUploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,79 +22,97 @@ class CoasterController extends AbstractController
     public function index(
         CoasterRepository $coasterRepository,
         ParkRepository $parkRepository,
-        CategorieRepository $categorieRepository,
+        CategoryRepository $categoryRepository,
         Request $request,
     ): Response
     {
+        // Récupére toutes les entités Coaster
+        // $entities = $coasterRepository->findAll();
         $parks = $parkRepository->findAll();
-        $categories = $categorieRepository->findAll();
+        $categories = $categoryRepository->findAll();
 
+        // Valeurs envoyées depuis le formulaire de filtre
         $parkId = (int) $request->query->get('park');
-        $categorieId = (int) $request->query->get('categorie');
+        $categoryId = (int) $request->query->get('category');
 
-        $count = 2;
-        $page = (int) $request->query->get('p', 1);
+        $count = 30;
+        $page = (int) $request->query->get('p', 1); // 1 par défaut
 
-        $entities = $coasterRepository->findFiltered($parkId, $categorieId, $count, $page);
+        $entities = $coasterRepository->findFiltered($parkId, $categoryId, $count, $page);
 
         $pageCount = max(ceil($entities->count() / $count), 1);
 
         return $this->render('coaster/index.html.twig', [
-            'entities' => $entities,
+            'entities' => $entities, // Envoi des entités dans la vue
             'parks' => $parks,
             'categories' => $categories,
             'parkId' => $parkId,
-            'categorieId' => $categorieId,
-            'pageCount' => $pageCount,
-            'page' => $page,
+            'categoryId' => $categoryId,
+            'pageCount' => $pageCount, // Nombre de pages
+            'page' => $page, // Numéro de la page à afficher
         ]);
     }
 
     #[Route(path: '/coaster/add')]
-    #[IsGranted('ROLE_USER')] 
+    #[IsGranted('ROLE_USER')]
     public function add(EntityManagerInterface $em, Request $request, FileUploader $fileUploader): Response
     {
         $coaster = new Coaster();
         $coaster->setAuthor($this->getUser());
 
         $form = $this->createForm(CoasterType::class, $coaster);
+        // Injecter les données $_POST
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $imageFile = $form->get('image')->getData();
-            if ($imageFile) {
-                $newFilename = $fileUploader->upload($imageFile);
-                $coaster->setImageFileName($newFilename);
+
+            $imageData = $form->get('image')->getData();
+            if ($imageData) {
+                $filePath = $fileUploader->upload($imageData);
+                $coaster->setImageFileName($filePath);
             }
 
             $em->persist($coaster);
             $em->flush();
 
+            // redirection
             return $this->redirectToRoute('app_coaster_index');
         }
 
         return $this->render('/coaster/add.html.twig', [
-            'coasterForm' => $form,
+            'coasterForm' => $form, // Envoi du formulaire dans la vue
         ]);
     }
 
+    // {id<\d+>} est un paramètre de type entier de 1 ou plusieurs chiffres
+    // Symfony utilise le param converter pour trouver l'entité Coaster depuis l'id 
     #[Route(path: '/coaster/{id<\d+>}/edit')]
-    #[IsGranted('ROLE_USER')] 
-    public function edit(Coaster $entity, EntityManagerInterface $em, Request $request, FileUploader $fileUploader): Response
+    #[IsGranted('ROLE_USER')]
+    public function edit(
+        Coaster $entity,
+        EntityManagerInterface $em,
+        Request $request,
+        FileUploader $fileUploader
+    ): Response
     {
         $this->denyAccessUnlessGranted(CoasterVoter::EDIT, $entity);
 
+        // dump($entity);
         $form = $this->createForm(CoasterType::class, $entity);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $imageFile = $form->get('image')->getData();
-            if ($imageFile) {
+
+            // $form->get('image') Récupére le champ 'image'
+            // ->getData() Retourne la donnée UploadedFile
+            $imageData = $form->get('image')->getData();
+            if ($imageData) {
                 if ($entity->getImageFileName()) {
                     $fileUploader->remove($entity->getImageFileName());
                 }
-                $newFilename = $fileUploader->upload($imageFile);
-                $entity->setImageFileName($newFilename);
+
+                $filePath = $fileUploader->upload($imageData);
+                $entity->setImageFileName($filePath);
             }
 
             $em->flush();
@@ -108,10 +126,14 @@ class CoasterController extends AbstractController
     }
 
     #[Route(path: '/coaster/{id<\d+>}/delete')]
-    #[IsGranted('ROLE_ADMIN')] 
+    #[IsGranted('ROLE_USER')]
     public function delete(Coaster $entity, EntityManagerInterface $em, Request $request, FileUploader $fileUploader): Response
     {
         $this->denyAccessUnlessGranted(CoasterVoter::EDIT, $entity);
+        // $_POST['_token'] => $request->request 
+        // $_GET['value'] => $request->query 
+        // $_SERVER[] => $request->server 
+        // $request->get('_token') => Deprecated
 
         if ($this->isCsrfTokenValid(
             'delete' . $entity->getId(), 
@@ -124,6 +146,7 @@ class CoasterController extends AbstractController
             $em->remove($entity);
             $em->flush();
 
+            // symfony console debug:router
             return $this->redirectToRoute('app_coaster_index');
         }
 
