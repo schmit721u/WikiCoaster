@@ -2,7 +2,7 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Category;
+use App\Entity\Categorie;
 use App\Entity\Coaster;
 use App\Entity\Park;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -306,7 +306,7 @@ class CoasterFixtures extends Fixture implements DependentFixtureInterface
             $coaster->setPublished($data['published']);
 
             foreach ($data['categories'] as $category) {
-                $coaster->addCategory($this->getReference($category, Category::class));
+                $coaster->addCategory($this->getReference($category, Categorie::class));
             }
 
             if (isset($data['imageFileName'])) {

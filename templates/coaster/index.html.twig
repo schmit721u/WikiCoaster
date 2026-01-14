@@ -59,6 +59,7 @@
             {% if is_granted(constant("App\\Security\\Voter\\CoasterVoter::EDIT"), entity) %}
               <a href="{{ path('app_coaster_edit', {id: entity.id}) }}" class="btn btn-accent btn-sm"><i class="bi bi-pencil"></i></a>
               <a href="{{ path('app_coaster_delete', {id: entity.id}) }}" class="btn btn-warning btn-sm"><i class="bi bi-trash"></i></a>
+            {% endif %}
             </td>
         </tr>
       {% endfor %}

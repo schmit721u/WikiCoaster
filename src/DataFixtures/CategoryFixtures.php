@@ -2,7 +2,7 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Category;
+use App\Entity\Categorie;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
@@ -24,7 +24,7 @@ class CategoryFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         foreach (self::getData() as $data) {
-            $category = new Category();
+            $category = new Categorie();
             $category->setName($data['name']);
             $category->setColor($data['color']);
             $this->addReference($data['name'], $category);
