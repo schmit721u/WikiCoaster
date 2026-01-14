@@ -4,17 +4,19 @@ namespace App\Controller;
 
 use App\Entity\Coaster;
 use App\Form\CoasterType;
-use App\Service\FileUploader;
 use App\Repository\CategorieRepository;
 use App\Repository\CoasterRepository;
 use App\Repository\ParkRepository;
 use App\Security\Voter\CoasterVoter;
+use App\Service\FileUploader\FileUploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\FileUploader\FileUploaderInterface;
+
 
 class CoasterController extends AbstractController
 {
@@ -52,7 +54,7 @@ class CoasterController extends AbstractController
 
     #[Route(path: '/coaster/add')]
     #[IsGranted('ROLE_USER')] 
-    public function add(EntityManagerInterface $em, Request $request, FileUploader $fileUploader): Response
+    public function add(EntityManagerInterface $em, Request $request, FileUploaderInterface $FileUploaderInterface): Response
     {
         $coaster = new Coaster();
         $coaster->setAuthor($this->getUser());
@@ -63,7 +65,7 @@ class CoasterController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $imageFile = $form->get('image')->getData();
             if ($imageFile) {
-                $newFilename = $fileUploader->upload($imageFile);
+                $newFilename = $FileUploaderInterface->upload($imageFile);
                 $coaster->setImageFileName($newFilename);
             }
 
@@ -80,7 +82,7 @@ class CoasterController extends AbstractController
 
     #[Route(path: '/coaster/{id<\d+>}/edit')]
     #[IsGranted('ROLE_USER')] 
-    public function edit(Coaster $entity, EntityManagerInterface $em, Request $request, FileUploader $fileUploader): Response
+    public function edit(Coaster $entity, EntityManagerInterface $em, Request $request, FileUploaderInterface $FileUploaderInterface): Response
     {
         $this->denyAccessUnlessGranted(CoasterVoter::EDIT, $entity);
 
@@ -91,9 +93,9 @@ class CoasterController extends AbstractController
             $imageFile = $form->get('image')->getData();
             if ($imageFile) {
                 if ($entity->getImageFileName()) {
-                    $fileUploader->remove($entity->getImageFileName());
+                    $FileUploaderInterface->remove($entity->getImageFileName());
                 }
-                $newFilename = $fileUploader->upload($imageFile);
+                $newFilename = $FileUploaderInterface->upload($imageFile);
                 $entity->setImageFileName($newFilename);
             }
 
@@ -109,7 +111,7 @@ class CoasterController extends AbstractController
 
     #[Route(path: '/coaster/{id<\d+>}/delete')]
     #[IsGranted('ROLE_ADMIN')] 
-    public function delete(Coaster $entity, EntityManagerInterface $em, Request $request, FileUploader $fileUploader): Response
+    public function delete(Coaster $entity, EntityManagerInterface $em, Request $request, FileUploaderInterface $FileUploaderInterface): Response
     {
         $this->denyAccessUnlessGranted(CoasterVoter::EDIT, $entity);
 
@@ -118,7 +120,7 @@ class CoasterController extends AbstractController
             $request->request->get('_token')
         )) {
             if ($entity->getImageFileName()) {
-                $fileUploader->remove($entity->getImageFileName());
+                $FileUploaderInterface->remove($entity->getImageFileName());
             }
 
             $em->remove($entity);
