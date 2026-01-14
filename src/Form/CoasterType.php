@@ -17,7 +17,7 @@ class CoasterType extends AbstractType
 {
 
     public function __construct(
-        private AuthorizationCheckerInterface $autorizationChecker,
+        private AuthorizationCheckerInterface $authorizationChecker,
      ) {}
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -40,26 +40,18 @@ class CoasterType extends AbstractType
                 'label' => 'Categorie',
                 'multiple' => true, 
                 'expanded' => true, 
-                'by_reference' => false,
             ])
             ->add('image', FileType::class, [
                     'label' => 'Image du coaster',
                     'mapped' => false,     // Ne correspond pas à une propriété de l'entité [cite: 11]
                     'required' => false,   // Le champ n'est pas obligatoire [cite: 12]
                     'constraints' => [     // Sécurisation du type de fichier [cite: 22]
-                        new Image([
-                            'maxSize' => '2M',
-                            'mimeTypes' => [
-                                'image/jpeg',
-                                'image/png',
-                            ],
-                            'mimeTypesMessage' => 'Veuillez uploader une image JPG ou PNG valide',
-                        ])
+                        new Image()
                     ],
                 ])
             ;
 
-        if  ($this->autorizationChecker->isGranted('ROLE_ADMIN')) {
+        if  ($this->authorizationChecker->isGranted('ROLE_ADMIN')) {
             $builder->add('published', options :[
                 'label'=>"Publier l'affiche" ,
             ]);
