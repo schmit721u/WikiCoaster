@@ -21,8 +21,8 @@
                 <td>{{ categorie.name }}</td>
                 <td>{{ categorie.color }}</td>
                 <td>
-                    <a href="{{ path('app_categorie_show', {'id': categorie.id}) }}">show</a>
-                    <a href="{{ path('app_categorie_edit', {'id': categorie.id}) }}">edit</a>
+                    <a href="{{ path('app_categorie_show', {'id': categorie.id}) }}" class="btn btn-accent btn-sm">show</a>
+                    <a href="{{ path('app_categorie_edit', {'id': categorie.id}) }}" class="btn btn-accent btn-sm">edit</a>
                 </td>
             </tr>
         {% else %}
